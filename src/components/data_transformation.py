@@ -55,7 +55,7 @@ class DataTransformation:
         try:
             numerical_columns = ['symboling', 'doornumber', 'wheelbase', 'carlength', 'carlength', 'carwidth', 'carheight', 'curbweight', 'cylindernumber', 'enginesize', 'boreratio',
                 'stroke', 'compressionratio', 'horsepower', 'peakrpm', 'citympg', 'highwaympg',]
-            categorical_columns = ['CarName', 'fueltype', 'aspiration', 'carbody', 'drivewheel', 'enginelocation', 'enginetype', 'fuelsystem']
+            categorical_columns = ['fueltype', 'aspiration', 'carbody', 'drivewheel', 'enginelocation', 'enginetype', 'fuelsystem']
 
             num_pipeline = Pipeline(
                 steps=[
@@ -68,11 +68,12 @@ class DataTransformation:
                 ]
             )
             logging.info('function 1  is completed')
+            custom_encoder = CustomEncoder(columns=categorical_columns)
             preprocessor = ColumnTransformer(
         transformers=[
             ('num_pipeline', num_pipeline, numerical_columns),
             ('cat_pipeline', cat_pipeline, categorical_columns),
-            ('custom_encoder',CustomEncoder,categorical_columns)
+            ('custom_encoder',custom_encoder,categorical_columns)
         ]
     )
             logging.info('Preprocessor completed')
@@ -95,16 +96,14 @@ class DataTransformation:
             # target_column_name = "price"
             # drop_column_name = "CarName"
 
-            input_feature_train_df = train_df.drop('price',axis=1)
+            input_feature_train_df = train_df.drop(['price','CarName'],axis=1)
             target_feature_train_df = train_df['price']
-            input_feature_test_df = test_df.drop('price',axis=1)
+            input_feature_test_df = test_df.drop(['price','CarName'],axis=1)
             target_feature_test_df = test_df['price']
 
             logging.info(
                 f"Applying preprocessing object on training dataframe and testing dataframe."
             )
-            logging.info(target_feature_test_df.head(5))
-            logging.info('The name of the  columns are {}'.format(train_df.columns))
 
             input_feature_train_arr = preproccesing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr = preproccesing_obj.transform(input_feature_test_df)
@@ -118,7 +117,6 @@ class DataTransformation:
                 input_feature_test_arr,np.array(target_feature_test_df)
             ]
             logging.info(f"Saved preprocessing object.")
-
             save_object(
 
                 file_path=self.data_transformation_config.preprocessor_obj_file_path,
