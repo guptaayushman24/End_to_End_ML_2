@@ -23,7 +23,6 @@ class CustomEncoder(BaseEstimator,TransformerMixin) :
 
     def transform(self,X) :
         X_encoded = X.copy()
-        X_encoded = X.copy()
         for col in self.columns:
             if (col == 'fueltype'):
                 X_encoded[col] = X_encoded[col].map({'gas': 1, 'disel': 0})
@@ -43,10 +42,6 @@ class CustomEncoder(BaseEstimator,TransformerMixin) :
             elif (col=='fuelsystem') :
                     ordinal_label_fuelsystem = {k: i for i, k in enumerate(X_encoded[col].unique(), 0)}
                     X_encoded[col] = X_encoded[col].map(ordinal_label_fuelsystem)
-            return X_encoded
-
-
-
         return X_encoded
 
 class DataTransformation:
@@ -59,7 +54,7 @@ class DataTransformation:
         '''
         try:
             numerical_columns = ['symboling', 'doornumber', 'wheelbase', 'carlength', 'carlength', 'carwidth', 'carheight', 'curbweight', 'cylindernumber', 'enginesize', 'boreratio',
-                'stroke', 'compressionratio', 'horsepower', 'peakrpm', 'citympg', 'highwaympg', 'price']
+                'stroke', 'compressionratio', 'horsepower', 'peakrpm', 'citympg', 'highwaympg',]
             categorical_columns = ['CarName', 'fueltype', 'aspiration', 'carbody', 'drivewheel', 'enginelocation', 'enginetype', 'fuelsystem']
 
             num_pipeline = Pipeline(
@@ -72,38 +67,7 @@ class DataTransformation:
                     ("imputer", SimpleImputer(strategy="most_frequent"))
                 ]
             )
-
-            # Encoding of the categorical columns
-            # lst_category_two_label = ['fueltype', 'aspiration', 'drivewheel', 'enginelocation']
-            # def encoding(df, columns):
-            #     for col in columns:
-            #         if col == 'fueltype':
-            #             df[col] = df[col].map({'gas': 1, 'disel': 0})
-            #         elif col == 'aspiration':
-            #             df[col] = df[col].map({'turbo': 1, 'std': 0})
-            #         elif col == 'drivewheel':
-            #             df[col] = df[col].map({'fwd': 1, 'rwd': 2, '4wd': 3})
-            #         elif col == 'enginelocation':
-            #             df[col] = df[col].map({'front': 1, 'rear': 0})
-            #     return df
             logging.info('function 1  is completed')
-
-            # lst_category_encoding_label = ['carbody','enginetype']
-            # def encoding2(df, columns):
-            #     for col in columns:
-            #         if col == 'carbody':
-            #             ordinal_label_carbody = {k: i for i, k in enumerate(df[col].unique(), 0)}
-            #             df[col] = df[col].map(ordinal_label_carbody)
-            #         elif col == 'enginetype':
-            #             ordinal_label_enginetype = {k: i for i, k in enumerate(df[col].unique(), 0)}
-            #             df[col] = df[col].map(ordinal_label_enginetype)
-            #         elif col == 'fuelsystem':
-            #             ordinal_label_fuelsystem = {k: i for i, k in enumerate(df[col].unique(), 0)}
-            #             df[col] = df[col].map(ordinal_label_fuelsystem)
-            #     return df
-            # logging.info('function 2 is completed')
-
-            # Creating the dictionary of the pipelines
             preprocessor = ColumnTransformer(
         transformers=[
             ('num_pipeline', num_pipeline, numerical_columns),
@@ -128,18 +92,19 @@ class DataTransformation:
             logging.info('Reading of training and testing of the dataset is completed')
             logging.info('Obtaining the preprocessing object')
 
-            target_column_name = "price"
+            # target_column_name = "price"
             # drop_column_name = "CarName"
 
-            input_feature_train_df = train_df.drop(columns=[target_column_name], axis=1)
-            target_feature_train_df = train_df[target_column_name]
-            input_feature_test_df = test_df.drop(columns=[target_column_name], axis=1)
-            target_feature_test_df = test_df[target_column_name]
+            input_feature_train_df = train_df.drop('price',axis=1)
+            target_feature_train_df = train_df['price']
+            input_feature_test_df = test_df.drop('price',axis=1)
+            target_feature_test_df = test_df['price']
 
             logging.info(
                 f"Applying preprocessing object on training dataframe and testing dataframe."
             )
             logging.info(target_feature_test_df.head(5))
+            logging.info('The name of the  columns are {}'.format(train_df.columns))
 
             input_feature_train_arr = preproccesing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr = preproccesing_obj.transform(input_feature_test_df)

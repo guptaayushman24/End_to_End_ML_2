@@ -24,7 +24,7 @@ class DataIngestion :
 
         try :
             # Read the dataset CarPricePrediction
-            df = pd.read_csv(r'src\notebook\data\CarPrice_Assignment.csv')
+            df = pd.read_csv(r'src\notebook\data\car_price_clean.csv')
             logging.info("Read the dataset as dataframe")
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
@@ -52,7 +52,7 @@ if __name__=="__main__" :
     # train_data,test_data = obj.initiate_data_ingestion()
     obj.initiate_data_ingestion()
 
-    # Here we have combined dataingestion and the datatransformation
+    # # Here we have combined dataingestion and the datatransformation
 
     # data_transformation = DataTransformation()
     # data_transformation.initiate_data_transformation(train_data,test_data)
