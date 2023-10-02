@@ -9,6 +9,7 @@ from sklearn.base import BaseEstimator,TransformerMixin
 # After writting the code of the data_transformation
 from src.components.data_transformation import DataTransformation
 from src.components.data_transformation import DataTransformationConfig
+from src.components.model_trainer import ModelTrainer
 
 @dataclass
 class DataIngestionConfig :
@@ -24,7 +25,8 @@ class DataIngestion :
 
         try :
             # Read the dataset CarPricePrediction
-            df = pd.read_csv(r'src\notebook\data\car_price_clean.csv')
+            # Reading the feature _selected dataset and I have selected the feature in the Model_Training.ipynb file using mutual_info_regression and then I selct top 5 feature using selectKBest technique
+            df = pd.read_csv(r'src\notebook\data\feature_selected.csv')
             logging.info("Read the dataset as dataframe")
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
@@ -55,8 +57,12 @@ if __name__=="__main__" :
     # # Here we have combined dataingestion and the datatransformation
 
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transformation(train_data,test_data)
+    train_arr,test_arr,_= data_transformation.initiate_data_transformation(train_data,test_data)
+
     logging.info('The main execution is completed')
 
+    modeltrainer = ModelTrainer()
+    print(modeltrainer.initiate_model_training(train_arr,test_arr))
 
+    logging.info('Training part of the model is completed')
 
