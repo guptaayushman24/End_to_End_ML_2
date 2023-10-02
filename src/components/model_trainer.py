@@ -18,11 +18,11 @@ from src.utils import evaluate_models
 from sklearn.metrics import r2_score
 @dataclass
 class ModelTrainerConfig() :
-    trained_model_path = os.path.join('artifacts','model.pkl')
+    trained_model_file_path : str = os.path.join('artifacts','model.pkl')
 
 class ModelTrainer() :
     def __init__(self) :
-        self.model_trainer_config= ModelTrainerConfig()
+        self.model_trainer_config = ModelTrainerConfig()
 
     def initiate_model_training(self,train_array,test_array) :
         try :
@@ -50,6 +50,11 @@ class ModelTrainer() :
             if (best_model_score<0.6) :
                 raise CustomException("No best model foound")
             logging.info("Best found model on both training and testing dataset")
+
+            save_object(
+                file_path=self.model_trainer_config.trained_model_file_path,
+                obj=best_model
+            )
 
             predictd = best_model.predict(X_test)
             r2_square_value = r2_score(y_test,predictd)
