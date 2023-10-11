@@ -29,7 +29,7 @@ def predict_car_price(data:CarPricePrediction) :
     prediction = regressor.predict([[curbweight,enginesize,horsepower,citympg,highwaympg]])
     prediction_json = prediction.tolist()
 
-    return prediction_json
+    return "The predicted car price is {}".format(prediction_json)
 
 
 
